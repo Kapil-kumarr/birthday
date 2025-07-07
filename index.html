@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday 🎂</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to top right, #ffdde1, #ee9ca7);
+      overflow-x: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+    .birthday-text {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 8em;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 2s linear infinite, float 3s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      z-index: 2;
+      text-align: center;
+    }
+    @keyframes shine {
+      0% { background-position: -500%; }
+      100% { background-position: 500%; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(-50%, -5%); }
+      50% { transform: translate(-50%, 5%); }
+    }
+    .firework {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #fff;
+      border-radius: 50%;
+      animation: explode 1s ease-out;
+      pointer-events: none;
+    }
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(20); opacity: 0; }
+    }
+    .balloon {
+      position: absolute;
+      border-radius: 50%;
+      animation: floatUp 15s linear infinite;
+      z-index: 1;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100vh) rotate(360deg); }
+    }
+    .popper {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: hsl(var(--hue, 0), 100%, 50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .photo-gallery {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      color: #fff;
+      margin-top: 3rem;
+      padding: 2rem;
+    }
+    .gallery-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    .images {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .images img {
+      width: 205px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+    .images img:hover {
+      transform: scale(1.05);
+    }
+    .custom-message {
+      font-size: 15px;
+      color: #7d7b7c;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      line-height: 1;
+      text-align: center;
+      white-space: pre-wrap;
+      margin: 0 auto;
+      max-width: 700px;
+    }
+    #countdown {
+      position: absolute;
+      top: 70%;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-size: 2em;
+      font-weight: bold;
+      z-index: 5;
+    }
+    #love-letter {
+      display: none;
+      position: absolute;
+      top: 60%;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5em;
+      color: #fff;
+      padding: 0 20px;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="birthday-text">HAPPY BIRTHDAY!</h1>
+  <div id="countdown"></div>
+  <div id="love-letter"></div>
+  <audio id="birthdayAudio" autoplay loop>
+    <source src="https://dawn-k-vinod.github.io/Happy_birthday/happy.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    // Animate title
+    gsap.from(".birthday-text", {
+      duration: 2,
+      scale: 0.5,
+      opacity: 0,
+      rotation: 360,
+      ease: "elastic.out(1, 0.3)"
+    });
+
+    // Balloons
+    function createBalloon() {
+      const balloon = document.createElement('div');
+      balloon.className = 'balloon';
+      balloon.style.width = '80px';
+      balloon.style.height = '120px';
+      balloon.style.left = Math.random() * window.innerWidth + 'px';
+      balloon.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+      balloon.style.animationDuration = Math.random() * 10 + 10 + 's';
+      document.body.appendChild(balloon);
+      setTimeout(() => balloon.remove(), 20000);
+    }
+    setInterval(createBalloon, 1500);
+
+    // Poppers
+    function createPoppers(x, y, count = 30) {
+      for (let i = 0; i < count; i++) {
+        const popper = document.createElement('div');
+        popper.classList.add('popper');
+        popper.style.left = `${x}px`;
+        popper.style.top = `${y}px`;
+        popper.style.setProperty('--hue', Math.floor(Math.random() * 360));
+        document.body.appendChild(popper);
+
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = 150 + Math.random() * 100;
+        const dx = Math.cos(angle) * radius;
+        const dy = Math.sin(angle) * radius;
+
+        gsap.to(popper, {
+          x: dx,
+          y: dy,
+          opacity: 0,
+          duration: 1.5 + Math.random(),
+          scale: 0.5 + Math.random(),
+          onComplete: () => popper.remove()
+        });
+      }
+    }
+
+    // Initial pop on load
+    window.addEventListener('load', () => {
+      const centerX = window.innerWidth / 2;
+      const bottomY = window.innerHeight - 100;
+      createPoppers(centerX, bottomY, 50);
+    });
+
+    document.addEventListener('click', (e) => {
+      document.getElementById('birthdayAudio').play();
+      createPoppers(e.clientX, e.clientY);
+    });
+
+    // Typewriter Love Letter
+    const loveLines = [
+      "Dear Love,",
+      "On this special day, I just want you to know...",
+      "You’ve made every moment magical and every day worth living.",
+      "Your smile lights up my world and your laugh is my favorite melody.",
+      "You're not just my love; you're my best friend, my biggest cheerleader, and my forever.",
+      "I can't wait to celebrate life with you — today, tomorrow, and always.",
+      "Happy Birthday, my sunshine 🌞❤️"
+    ];
+
+    function startLoveLetter() {
+      const container = document.getElementById("love-letter");
+      container.style.display = "block";
+      let index = 0;
+      function typeLine() {
+        if (index >= loveLines.length) return;
+        const line = document.createElement("p");
+        container.appendChild(line);
+        let charIndex = 0;
+        const typeChar = setInterval(() => {
+          if (charIndex < loveLines[index].length) {
+            line.textContent += loveLines[index][charIndex];
+            charIndex++;
+          } else {
+            clearInterval(typeChar);
+            index++;
+            setTimeout(typeLine, 1000);
+          }
+        }, 50);
+      }
+      typeLine();
+    }
+
+    // Unlock logic
+    const countdownElement = document.getElementById("countdown");
+    const unlockTime = new Date("2025-07-07T18:30:00Z");
+    const now = new Date();
+
+    function unlockSurprise() {
+      countdownElement.style.display = 'none';
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      createPoppers(centerX, centerY, 50);
+
+      const birthdayText = document.querySelector('.birthday-text');
+      if (birthdayText) birthdayText.remove();
+
+      const gallery = document.createElement('div');
+      gallery.className = 'photo-gallery';
+      gallery.innerHTML = `
+        <h2 class="gallery-title">💖 Our Memories Together</h2>
+        <div class="images">
+          <img src="1.jpg" alt="Memory 1">
+          <img src="2.jpg" alt="Memory 2">
+          <img src="3.jpg" alt="Memory 3">
+        </div>
+        <p class="custom-message">
+🎉 Happy Birthday to the most lovable person of my life! 💖
+
+It's your special day, my love, and you have no idea how excited I am! 😍
+Main bohot time se iss din ka intezaar kar raha tha – jis din main aapke birthday par aapke saath hoon! 💑
+Aaj finally woh din aa gaya hai! ✨
+
+Honestly, poora credit mummy ko jata hai, jinhone mere liye aapko janam diya – 🌸
+aur dil se thank you Shivji ka bhi, jinki wajah se hum dono ek dusre se mile 💫
+aur ab tak saath hain ❤️
+
+I love you so much, my jaan. 💕
+Main dua karta hoon ki humara bond waqt ke saath aur bhi zyada strong ho 💞
+Aur Shivji aapko har woh khushi de jo aap deserve karti ho apni zindagi mein. 🙏✨
+
+Always keep smiling, stay happy, and remember how deeply you're loved, meri jaan! 😘🎂🎁🎈
+        </p>`;
+      document.body.appendChild(gallery);
+      setTimeout(() => gallery.scrollIntoView({ behavior: 'smooth' }), 1000);
+      startLoveLetter();
+    }
+
+    if (now >= unlockTime) {
+      unlockSurprise();
+    } else {
+      const countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = unlockTime.getTime() - now;
+
+        if (distance <= 0) {
+          clearInterval(countdownInterval);
+          unlockSurprise();
+        } else {
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          countdownElement.innerText = `🎁 Unlocking surprise in ${minutes}m ${seconds}s...`;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
