@@ -290,9 +290,11 @@ Always keep smiling, stay happy, and remember how deeply you're loved, meri jaan
           clearInterval(countdownInterval);
           unlockSurprise();
         } else {
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          countdownElement.innerText = `🎁 Unlocking surprise in ${minutes}m ${seconds}s...`;
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+countdownElement.innerText = `🎁 Unlocking surprise in ${hours}h ${minutes}m ${seconds}s...`;
+
         }
       }, 1000);
     }
